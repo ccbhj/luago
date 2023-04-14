@@ -1,0 +1,73 @@
+package state
+
+type luaStack struct {
+	slots []luaValue
+	top   int
+}
+
+func newLuaStack(size int) *luaStack {
+	return &luaStack{
+		slots: make([]luaValue, size),
+		top:   0,
+	}
+}
+
+// check grows the stack's size to be at least `n`
+func (l *luaStack) check(n int) {
+	free := len(l.slots) - l.top
+	for i := free; i < n; i++ {
+		l.slots = append(l.slots, nil)
+	}
+}
+
+func (l *luaStack) push(val luaValue) {
+	if l.top == len(l.slots) {
+		panic("stack overflow!")
+	}
+
+	l.slots[l.top] = val
+	l.top++
+}
+
+func (l *luaStack) pop() luaValue {
+	if l.top < 1 {
+		panic("stack underflow!")
+	}
+	l.top--
+	val := l.slots[l.top]
+	l.slots[l.top] = nil
+	return val
+}
+
+func (l *luaStack) absIndex(idx int) int {
+	if idx >= 0 {
+		return idx
+	}
+	return idx + l.top + 1
+}
+
+func (l *luaStack) isValid(idx int) bool {
+	idx = l.absIndex(idx)
+	return idx > 0 && idx <= l.top
+}
+
+func (l *luaStack) isAbsIdxValid(idx int) bool {
+	return idx > 0 && idx <= l.top
+}
+
+func (l *luaStack) get(idx int) luaValue {
+	idx = l.absIndex(idx)
+	if l.isAbsIdxValid(idx) {
+		return l.slots[idx-1]
+	}
+	return nil
+}
+
+func (l *luaStack) set(idx int, val luaValue) {
+	idx = l.absIndex(idx)
+	if l.isAbsIdxValid(idx) {
+		l.slots[idx-1] = val
+		return
+	}
+	panic("invalid index!")
+}

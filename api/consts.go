@@ -1,7 +1,5 @@
 package api
 
-import "strconv"
-
 type LuaType int
 
 const (
@@ -32,7 +30,71 @@ var typeNames = map[LuaType]string{
 func (s LuaType) String() string {
 	v, in := typeNames[s]
 	if !in {
-		panic("unknown type: " + strconv.Itoa(int(s)))
+		return "<UNKNOWN_TYPE>"
 	}
 	return v
+}
+
+type ArithOp int
+
+const (
+	LUA_OPADD  ArithOp = iota // +
+	LUA_OPSUB                 // -
+	LUA_OPMUL                 // *
+	LUA_OPMOD                 // %
+	LUA_OPPOW                 // ^
+	LUA_OPDIV                 // /
+	LUA_OPIDIV                // //
+	LUA_OPBAND                // &
+	LUA_OPBOR                 //  |
+	LUA_OPBXOR                // ~
+	LUA_OPSHL                 // <<
+	LUA_OPSHR                 // >>
+	LUA_OPUNM                 // -
+	LUA_OPBNOT                // ~
+)
+
+var arithOpNames = [...]string{
+	LUA_OPADD:  "+",
+	LUA_OPSUB:  "-",
+	LUA_OPMUL:  "*",
+	LUA_OPMOD:  "%",
+	LUA_OPPOW:  "^",
+	LUA_OPDIV:  "/",
+	LUA_OPIDIV: "//",
+	LUA_OPBAND: "&",
+	LUA_OPBOR:  " ",
+	LUA_OPBXOR: "~",
+	LUA_OPSHL:  "<",
+	LUA_OPSHR:  ">",
+	LUA_OPUNM:  "-",
+	LUA_OPBNOT: "~",
+}
+
+func (o ArithOp) String() string {
+	if o < 0 || int(o) >= len(arithOpNames) {
+		return "<UNKNOWN_AIRTH_OP>"
+	}
+	return arithOpNames[o]
+}
+
+type CompareOp int
+
+const (
+	LUA_OPEQ CompareOp = iota // ==
+	LUA_OPLT                  // <
+	LUA_OPLE                  // <=
+)
+
+var compareOpName = [...]string{
+	LUA_OPEQ: "==",
+	LUA_OPLT: "<",
+	LUA_OPLE: "<=",
+}
+
+func (o CompareOp) String() string {
+	if o < 0 || int(o) >= len(compareOpName) {
+		return "<UNKNOWN_AIRTH_OP>"
+	}
+	return compareOpName[o]
 }

@@ -30,7 +30,6 @@ func (l *luaState) PushValue(idx int) {
 	l.stack.push(val)
 }
 
-// Replace pop the value on stack top and set it at `idx`
 func (l *luaState) Replace(idx int) {
 	val := l.stack.pop()
 	l.stack.set(idx, val)

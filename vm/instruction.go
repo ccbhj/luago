@@ -1,5 +1,10 @@
 package vm
 
+import (
+	"fmt"
+	"luago/api"
+)
+
 const MAXARG_Bx = 1<<18 - 1       // 2^18 - 1 = 262143
 const MAXARG_sBx = MAXARG_Bx >> 1 //  262143 / 2 = 131071
 
@@ -48,4 +53,13 @@ func (i Instruction) BMode() byte {
 
 func (i Instruction) CMode() byte {
 	return byte(opcodes[i.Opcode()].argCMode)
+}
+
+func (i Instruction) Execute(vm api.LuaVM) {
+	act := opcodes[i.Opcode()].action
+	if act != nil {
+		act(i, vm)
+	} else {
+		panic(fmt.Sprintf("op %d action not found", i))
+	}
 }

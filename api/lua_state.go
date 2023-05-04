@@ -4,10 +4,13 @@ type LuaState interface {
 	// basic stack manipulation
 	GetTop() int
 	AbsIndex(idx int) int
+	// Check grows the stack's size to be at least `n` free slots
 	CheckStack(n int) bool
 	Pop(n int)
 	Copy(fromIdx, toIdx int)
+	// PushValue get the value at idx and push them to the top
 	PushValue(idx int)
+	// Replace pop the value on stack top and replace the value at `idx` with it
 	Replace(idx int)
 	Insert(idx int)
 	Remove(idx int)
@@ -39,4 +42,24 @@ type LuaState interface {
 	PushInteger(int64)
 	PushNumber(float64)
 	PushString(string)
+
+	// Arith evaluate the op using values in stack
+	// and push the result into the stack top
+	// for math and bitwise op
+	Arith(op ArithOp)
+	Compare(idx1, idx2 int, op CompareOp) bool
+	Len(idx int)
+	// Concat perform `n` times concatention at stack top
+	Concat(n int)
+
+	// Table APIs
+	NewTable()
+	CreateTable(nArr, nRec int)
+	GetTable(idx int) LuaType
+	GetField(idx int, k string) LuaType
+	GetI(idx int, i int64) LuaType
+	// Table set function
+	SetTable(idx int)
+	SetField(idx int, k string)
+	SetI(idx int, n int64)
 }

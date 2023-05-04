@@ -12,7 +12,7 @@ func newLuaStack(size int) *luaStack {
 	}
 }
 
-// check grows the stack's size to be at least `n`
+// check grows the stack's size to be at least `n` free slots
 func (l *luaStack) check(n int) {
 	free := len(l.slots) - l.top
 	for i := free; i < n; i++ {

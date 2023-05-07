@@ -1,8 +1,10 @@
-package main
+package utils
 
 import (
 	"fmt"
 	"luago/binchunk"
+	"luago/llog"
+	"strings"
 
 	. "luago/api"
 	. "luago/vm"
@@ -128,20 +130,21 @@ func upvalName(proto *binchunk.Prototype, i int) string {
 	return "-"
 }
 
-func printStack(ls LuaState) {
+func PrintStack(ls LuaState) {
 	top := ls.GetTop()
+	elems := make([]string, 0, 1<<3)
 	for i := 1; i <= top; i++ {
 		t := ls.Type(i)
 		switch t {
 		case LUA_TBOOLEAN:
-			fmt.Printf("[%t]", ls.ToBoolean(i))
+			elems = append(elems, fmt.Sprintf("[%t]", ls.ToBoolean(i)))
 		case LUA_TNUMBER:
-			fmt.Printf("[%g]", ls.ToNumber(i))
+			elems = append(elems, fmt.Sprintf("[%g]", ls.ToNumber(i)))
 		case LUA_TSTRING:
-			fmt.Printf("[%q]", ls.ToString(i))
+			elems = append(elems, fmt.Sprintf("[%q]", ls.ToString(i)))
 		default:
-			fmt.Printf("[%s]", ls.TypeName(t))
+			elems = append(elems, fmt.Sprintf("[%s]", ls.TypeName(t)))
 		}
 	}
-	fmt.Println()
+	llog.Debug("stack: %s", strings.Join(elems, ""))
 }

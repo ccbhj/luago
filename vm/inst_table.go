@@ -1,6 +1,8 @@
 package vm
 
-import . "luago/api"
+import (
+	. "luago/api"
+)
 
 const CFIELDS_PER_FLUSH = 50
 
@@ -35,6 +37,13 @@ func setList(i Instruction, vm LuaVM) {
 	list, batchOff, nbatch := i.ABC()
 	list++
 
+	isBatchOffZero := batchOff == 0
+	if isBatchOffZero {
+		// returned values from function call
+		batchOff = int(vm.ToInteger(-1)) - list - 1
+		vm.Pop(1)
+	}
+
 	if nbatch > 0 {
 		nbatch--
 	} else {
@@ -46,5 +55,15 @@ func setList(i Instruction, vm LuaVM) {
 		idx++
 		vm.PushValue(list + j)
 		vm.SetI(list, idx)
+	}
+
+	if isBatchOffZero {
+		for j := vm.RegisterCount() + 1; j <= vm.GetTop(); j++ {
+			idx++
+			vm.PushValue(j)
+			vm.SetI(list, idx)
+		}
+		// clear the stack
+		vm.SetTop(vm.RegisterCount())
 	}
 }

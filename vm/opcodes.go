@@ -111,7 +111,7 @@ var opcodes = []opcode{
 	{0, 0, OpArgK, OpArgK, IABC, "SETTABLE", setTable},
 	{0, 1, OpArgU, OpArgU, IABC, "NEWTABLE", newTable},
 
-	{0, 1, OpArgR, OpArgK, IABC, "SELF", nil},
+	{0, 1, OpArgR, OpArgK, IABC, "SELF", self},
 	{0, 1, OpArgK, OpArgK, IABC, "ADD", add},
 	{0, 1, OpArgK, OpArgK, IABC, "SUB", sub},
 	{0, 1, OpArgK, OpArgK, IABC, "MUL", mul},
@@ -139,9 +139,9 @@ var opcodes = []opcode{
 	{1, 0, OpArgN, OpArgU, IABC, "TEST", test},
 	{1, 1, OpArgR, OpArgU, IABC, "TESTSET", testSet},
 
-	{0, 1, OpArgU, OpArgU, IABC, "CALL", nil},
-	{0, 1, OpArgU, OpArgU, IABC, "TESTCALL", nil},
-	{0, 0, OpArgU, OpArgN, IABC, "RETURN", nil},
+	{0, 1, OpArgU, OpArgU, IABC, "CALL", call},
+	{0, 1, OpArgU, OpArgU, IABC, "TAILCALL", tailcall},
+	{0, 0, OpArgU, OpArgN, IABC, "RETURN", _return},
 
 	{0, 1, OpArgR, OpArgN, IAsBx, "FORLOOP", forLoop},
 	{0, 1, OpArgR, OpArgN, IAsBx, "FORPREP", forPrep},
@@ -150,7 +150,7 @@ var opcodes = []opcode{
 	{0, 1, OpArgR, OpArgN, IAsBx, "TFORLOOP", nil},
 
 	{0, 0, OpArgU, OpArgU, IABC, "SETLIST", setList},
-	{0, 1, OpArgU, OpArgN, IABx, "CLOSURE", nil},
-	{0, 1, OpArgU, OpArgN, IABC, "VARARG", nil},
+	{0, 1, OpArgU, OpArgN, IABx, "CLOSURE", closure},
+	{0, 1, OpArgU, OpArgN, IABC, "VARARG", vararg},
 	{0, 0, OpArgU, OpArgU, IAx, "EXTRAARG", nil},
 }

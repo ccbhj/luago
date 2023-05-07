@@ -1,29 +1,21 @@
 package state
 
-import "luago/llog"
-
 func (l *luaState) PC() int {
-	return l.pc
+	return l.stack.pc
 }
 
 func (l *luaState) AddPC(n int) {
-	l.pc += n
+	l.stack.pc += n
 }
 
 func (l *luaState) Fetch() uint32 {
-	if l.pc < 0 || l.pc >= len(l.proto.Code) {
-		llog.Fatal("pc(%d) out of range code table[0, %d)", l.pc, len(l.proto.Code))
-	}
-	ins := l.proto.Code[l.pc]
-	l.pc++
-	return ins
+	i := l.stack.closure.proto.Code[l.stack.pc]
+	l.stack.pc++
+	return i
 }
 
 func (l *luaState) GetConst(idx int) {
-	if idx < 0 || idx >= len(l.proto.Constants) {
-		llog.Fatal("idx(%d) out of range constants table[0, %d)", idx, len(l.proto.Constants))
-	}
-	cnst := l.proto.Constants[idx]
+	cnst := l.stack.closure.proto.Constants[idx]
 	l.stack.push(cnst)
 }
 
@@ -35,4 +27,22 @@ func (l *luaState) GetRK(rk int) {
 	}
 	// register
 	l.PushValue(rk + 1)
+}
+
+func (l *luaState) RegisterCount() int {
+	return int(l.stack.closure.proto.MaxStackSize)
+}
+
+func (l *luaState) LoadVararg(n int) {
+	if n < 0 {
+		n = len(l.stack.varargs)
+	}
+	l.stack.check(n)
+	l.stack.pushN(l.stack.varargs, n)
+}
+
+func (l *luaState) LoadProto(idx int) {
+	proto := l.stack.closure.proto.Protos[idx]
+	closure := newLuaClosure(proto)
+	l.stack.push(closure)
 }

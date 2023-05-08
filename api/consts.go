@@ -1,5 +1,16 @@
 package api
 
+const (
+	// -1001k       -1000k             0                 1000k
+	// +-------------+-----------------+-------------------+  stack size consts
+	// registery   min_valid                             max_valid_idx
+	//  idx         idx
+	LUA_MINSTACK      = 20
+	LUAI_MAXSTACK     = 1_000_000
+	LUA_RIDX_GLOBALS  = int64(2)
+	LUA_REGISTRYINDEX = -LUAI_MAXSTACK - 1000
+)
+
 type LuaType int
 
 const (

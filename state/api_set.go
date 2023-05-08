@@ -1,5 +1,7 @@
 package state
 
+import "luago/api"
+
 func (l *luaState) SetTable(idx int) {
 	tbl := l.stack.get(idx)
 	v := l.stack.pop()
@@ -27,4 +29,15 @@ func (l *luaState) SetI(idx int, i int64) {
 	v := l.stack.pop()
 
 	l.setTable(t, i, v)
+}
+
+func (l *luaState) SetGlobal(name string) {
+	t := l.registry.get(api.LUA_RIDX_GLOBALS)
+	v := l.stack.pop()
+	l.setTable(t, name, v)
+}
+
+func (l *luaState) Register(name string, f api.GoFunction) {
+	l.PushGoFunction(f)
+	l.SetGlobal(name)
 }

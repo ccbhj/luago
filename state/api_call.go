@@ -1,7 +1,6 @@
 package state
 
 import (
-	"fmt"
 	"luago/binchunk"
 	"luago/llog"
 	"luago/utils"
@@ -20,7 +19,12 @@ func (l *luaState) Call(nArgs, nResults int) {
 	if !ok {
 		panic("not a function")
 	}
-	fmt.Printf("call %s<%d,%d>\n", c.proto.Source,
+	if c.goFunc != nil {
+		llog.Debug("call go function\n")
+		l.callGoClosure(nArgs, nResults, c)
+		return
+	}
+	llog.Debug("call %s<%d,%d>\n", c.proto.Source,
 		c.proto.LineDefined, c.proto.LastLineDefined)
 	l.callLuaClosure(nArgs, nResults, c)
 	return
@@ -62,5 +66,24 @@ func (l *luaState) runLuaClosure() {
 		if inst.Opcode() == vm.OP_RETURN {
 			break
 		}
+	}
+}
+
+func (l *luaState) callGoClosure(nArgs, nResults int, c *closure) {
+	newStack := newLuaStack(nArgs + 20)
+	newStack.closure = c
+
+	funcAndArgs := l.stack.popN(nArgs + 1)
+	newStack.pushN(funcAndArgs[1:], nArgs)
+	l.stack.pop()
+
+	l.pushLuaStack(newStack)
+	r := c.goFunc(l)
+	l.popLuaStack()
+
+	if nResults != 0 {
+		results := newStack.popN(r)
+		l.stack.check(len(results))
+		l.stack.pushN(results, nResults)
 	}
 }

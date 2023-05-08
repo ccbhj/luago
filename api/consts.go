@@ -1,5 +1,12 @@
 package api
 
+const (
+	LUA_MINSTACK      = 20
+	LUAI_MAXSTACK     = 1_000_000
+	LUA_RIDX_GLOBALS  = int64(2)
+	LUA_REGISTRYINDEX = -LUAI_MAXSTACK - 1000
+)
+
 type LuaType int
 
 const (

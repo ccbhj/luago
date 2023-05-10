@@ -38,6 +38,6 @@ func (l *luaState) SetGlobal(name string) {
 }
 
 func (l *luaState) Register(name string, f api.GoFunction) {
-	l.PushGoFunction(f)
+	l.PushGoFunction(f, 0)
 	l.SetGlobal(name)
 }

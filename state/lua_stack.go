@@ -84,6 +84,11 @@ func (l *luaStack) absIndex(idx int) int {
 }
 
 func (l *luaStack) isValid(idx int) bool {
+	if idx < api.LUA_REGISTRYINDEX {
+		uvIdx := api.LUA_REGISTRYINDEX - idx - 1
+		c := l.closure
+		return c != nil && uvIdx < len(c.upvals)
+	}
 	if idx == api.LUA_REGISTRYINDEX {
 		return true
 	}
@@ -96,6 +101,14 @@ func (l *luaStack) isAbsIdxValid(idx int) bool {
 }
 
 func (l *luaStack) get(idx int) luaValue {
+	if idx < api.LUA_REGISTRYINDEX {
+		uvIdx := api.LUA_REGISTRYINDEX - idx - 1
+		c := l.closure
+		if c == nil || uvIdx >= len(c.upvals) {
+			return nil
+		}
+		return *c.upvals[uvIdx].val
+	}
 	if idx == api.LUA_REGISTRYINDEX {
 		return l.state.registry
 	}
@@ -107,6 +120,14 @@ func (l *luaStack) get(idx int) luaValue {
 }
 
 func (l *luaStack) set(idx int, val luaValue) {
+	if idx < api.LUA_REGISTRYINDEX {
+		uvIdx := api.LUA_REGISTRYINDEX - idx - 1
+		c := l.closure
+		if c == nil || uvIdx >= len(c.upvals) {
+			return
+		}
+		*c.upvals[uvIdx].val = val
+	}
 	if idx == api.LUA_REGISTRYINDEX {
 		l.state.registry = val.(*luaTable)
 		return

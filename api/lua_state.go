@@ -68,7 +68,7 @@ type LuaState interface {
 	Load(chunk []byte, chunkName, mode string) int
 	Call(nArgs, nResults int)
 
-	PushGoFunction(f GoFunction)
+	PushGoFunction(f GoFunction, nUpvals int)
 	IsGoFunction(idx int) bool
 	ToGoFunction(idx int) GoFunction
 
@@ -76,4 +76,8 @@ type LuaState interface {
 	GetGlobal(name string) LuaType
 	SetGlobal(name string)
 	Register(name string, f GoFunction)
+}
+
+func LuaUpvalueIndex(i int) int {
+	return LUA_REGISTRYINDEX - i
 }

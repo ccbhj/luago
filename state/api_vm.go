@@ -47,6 +47,7 @@ func (l *luaState) LoadProto(idx int) {
 	newClosure := newLuaClosure(subProto)
 	stack.push(newClosure)
 
+	// catch values from the parent closure and save them as oepned upvalues
 	for i, uvInfo := range subProto.Upvalues {
 		uvIdx := int(uvInfo.Idx)
 		if uvInfo.Instack != 1 {
@@ -71,5 +72,16 @@ func (l *luaState) LoadProto(idx int) {
 		// new closure
 		newClosure.upvals[i] = &upvalue{&stack.slots[uvIdx]}
 		stack.openuvs[uvIdx] = newClosure.upvals[i]
+	}
+}
+
+func (l *luaState) CloseUpvalues(a int) {
+	a--
+	for i, openuv := range l.stack.openuvs {
+		if i >= a {
+			val := *openuv.val
+			openuv.val = &val
+			delete(l.stack.openuvs, i)
+		}
 	}
 }

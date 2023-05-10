@@ -102,12 +102,12 @@ var opcodes = []opcode{
 	{0, 1, OpArgU, OpArgU, IABC, "LOADBOOL", loadBool},
 	{0, 1, OpArgU, OpArgN, IABC, "LOADNIL", loadNil},
 
-	{0, 1, OpArgU, OpArgN, IABC, "GETUPVAL", nil},
+	{0, 1, OpArgU, OpArgN, IABC, "GETUPVAL", getUpval},
 	{0, 1, OpArgU, OpArgK, IABC, "GETTABUP", getTabUp},
 	{0, 1, OpArgR, OpArgK, IABC, "GETTABLE", getTable},
 
-	{0, 0, OpArgK, OpArgK, IABC, "SETTABUP", nil},
-	{0, 0, OpArgU, OpArgN, IABC, "SETUPVAL", nil},
+	{0, 0, OpArgK, OpArgK, IABC, "SETTABUP", setTabUp},
+	{0, 0, OpArgU, OpArgN, IABC, "SETUPVAL", setUpval},
 	{0, 0, OpArgK, OpArgK, IABC, "SETTABLE", setTable},
 	{0, 1, OpArgU, OpArgU, IABC, "NEWTABLE", newTable},
 

@@ -2,8 +2,13 @@ package state
 
 import . "luago/api"
 
-func (l *luaState) PushGoFunction(fn GoFunction) {
-	l.stack.push(newGoClosure(fn, 0))
+func (l *luaState) PushGoFunction(fn GoFunction, nUpvals int) {
+	closure := newGoClosure(fn, nUpvals)
+	for i := nUpvals; i > 0; i-- {
+		val := l.stack.pop()
+		closure.upvals[nUpvals-1] = &upvalue{&val}
+	}
+	l.stack.push(closure)
 }
 
 func (l *luaState) IsGoFunction(idx int) bool {

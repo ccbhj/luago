@@ -14,7 +14,7 @@ func New() *luaState {
 	ls := &luaState{
 		registry: registry,
 	}
-	ls.pushLuaStack(newLuaStack(api.LUA_MINSTACK))
+	ls.pushLuaStack(newLuaStack(api.LUA_MINSTACK, ls))
 
 	return ls
 }

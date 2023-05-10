@@ -16,11 +16,7 @@ type closure struct {
 }
 
 func newLuaClosure(proto *binchunk.Prototype) *closure {
-	c := &closure{proto: proto}
-	if len(proto.Upvalues) > 0 {
-		c.upvals = make([]*upvalue, len(proto.Upvalues))
-	}
-	return c
+	return &closure{proto: proto}
 }
 
 func newGoClosure(fn GoFunction, nUpvalue int) *closure {

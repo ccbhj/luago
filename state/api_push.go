@@ -28,3 +28,8 @@ func (l *luaState) PushInteger(i int64) { l.stack.push(i) }
 
 func (l *luaState) PushNumber(f float64) { l.stack.push(f) }
 func (l *luaState) PushString(s string)  { l.stack.push(s) }
+
+func (l *luaState) PushGlobalTable() {
+	global := l.registry.get(LUA_RIDX_GLOBALS)
+	l.stack.push(global)
+}

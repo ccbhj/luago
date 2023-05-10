@@ -1,6 +1,7 @@
 package state
 
 import (
+	"luago/api"
 	"luago/binchunk"
 	"luago/llog"
 	"luago/utils"
@@ -9,7 +10,12 @@ import (
 
 func (l *luaState) Load(chunk []byte, chunkName, mode string) int {
 	proto := binchunk.Undump(chunk)
-	l.stack.push(newLuaClosure(proto))
+	c := newLuaClosure(proto)
+	l.stack.push(c)
+	if len(proto.Upvalues) > 0 {
+		env := l.registry.get(api.LUA_RIDX_GLOBALS)
+		c.upvals[0] = &upvalue{&env}
+	}
 	return 0
 }
 
@@ -27,7 +33,6 @@ func (l *luaState) Call(nArgs, nResults int) {
 	llog.Debug("call %s<%d,%d>\n", c.proto.Source,
 		c.proto.LineDefined, c.proto.LastLineDefined)
 	l.callLuaClosure(nArgs, nResults, c)
-	return
 }
 
 func (l *luaState) callLuaClosure(nArgs, nResults int, c *closure) {

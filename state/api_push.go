@@ -3,7 +3,7 @@ package state
 import . "luago/api"
 
 func (l *luaState) PushGoFunction(fn GoFunction) {
-	l.stack.push(newGoClosure(fn))
+	l.stack.push(newGoClosure(fn, 0))
 }
 
 func (l *luaState) IsGoFunction(idx int) bool {

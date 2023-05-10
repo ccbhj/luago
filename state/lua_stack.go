@@ -8,6 +8,9 @@ type luaStack struct {
 	closure *closure
 	varargs []luaValue
 	pc      int
+
+	// openuvs are upvalues whose value is still on the stack
+	openuvs map[int]*upvalue // idx -> upvalue
 }
 
 func newLuaStack(size int) *luaStack {

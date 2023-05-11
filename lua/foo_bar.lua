@@ -1,3 +1,2 @@
-function foo()
-  function bar() end
-end
+function f(i) return 10, 100 end
+local a, b =  f(1)

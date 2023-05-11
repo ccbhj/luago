@@ -1,6 +1,9 @@
 package state
 
-import "luago/api"
+import (
+	"fmt"
+	"luago/api"
+)
 
 type luaStack struct {
 	slots []luaValue
@@ -127,6 +130,7 @@ func (l *luaStack) set(idx int, val luaValue) {
 			return
 		}
 		*c.upvals[uvIdx].val = val
+		return
 	}
 	if idx == api.LUA_REGISTRYINDEX {
 		l.state.registry = val.(*luaTable)
@@ -137,5 +141,5 @@ func (l *luaStack) set(idx int, val luaValue) {
 		l.slots[idx-1] = val
 		return
 	}
-	panic("invalid index!")
+	panic(fmt.Sprintf("invalid index %d!", idx))
 }

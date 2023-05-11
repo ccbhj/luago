@@ -63,7 +63,7 @@ func initLogLevel() {
 }
 
 func initLogger() {
-	logger = log.New(os.Stdout, "[LUAGO]", log.LstdFlags)
+	logger = log.New(os.Stdout, "[LUAGO]", 0)
 
 	Debug = wrapLogFn(LogLevelDebug, "D")
 	Info = wrapLogFn(LogLevelInfo, "I")

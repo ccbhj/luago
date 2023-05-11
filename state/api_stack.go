@@ -1,5 +1,7 @@
 package state
 
+import "luago/llog"
+
 func (l *luaState) GetTop() int {
 	return l.stack.top
 }
@@ -31,6 +33,12 @@ func (l *luaState) PushValue(idx int) {
 }
 
 func (l *luaState) Replace(idx int) {
+	if l.stack.closure.proto.LineDefined == 0 && l.stack.closure.proto.LastLineDefined == 0 {
+		pc := l.PC()
+		if pc == 6 || pc == 7 || pc == 10 || pc == 11 {
+			llog.Debug("BREAKPOINT")
+		}
+	}
 	val := l.stack.pop()
 	l.stack.set(idx, val)
 }

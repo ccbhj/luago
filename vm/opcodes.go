@@ -1,6 +1,9 @@
 package vm
 
-import "luago/api"
+import (
+	"fmt"
+	"luago/api"
+)
 
 // encoding modes(format)
 type OpEncodingMode byte
@@ -93,6 +96,25 @@ type opcode struct {
 	name     string
 
 	action func(Instruction, api.LuaVM)
+}
+
+func (i Instruction) String() string {
+	op := opcodes[i.Opcode()]
+	switch op.opMode {
+	case IABC:
+		a, b, c := i.ABC()
+		return fmt.Sprintf("%-8s     %2d %2d %2d", op.name, a, b, c)
+	case IABx:
+		a, bx := i.ABx()
+		return fmt.Sprintf("%-8s     %2d %2d", op.name, a, bx)
+	case IAsBx:
+		a, sbx := i.AsBx()
+		return fmt.Sprintf("%-8s     %2d %2d", op.name, a, sbx)
+	case IAx:
+		ax := i.Ax()
+		return fmt.Sprintf("%-8s     %2d", op.name, ax)
+	}
+	panic(fmt.Sprintf("invaid instruct %d", i))
 }
 
 var opcodes = []opcode{

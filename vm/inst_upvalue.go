@@ -34,7 +34,6 @@ func setTabUp(i Instruction, vm LuaVM) {
 	// UpValue[A][RK[B]] = RK[C]
 	tabIdx, keyIdx, valIdx := i.ABC()
 	tabIdx++
-	valIdx++
 
 	vm.GetRK(keyIdx)
 	vm.GetRK(valIdx)

@@ -146,5 +146,5 @@ func PrintStack(ls LuaState) {
 			elems = append(elems, fmt.Sprintf("[%s]", ls.TypeName(t)))
 		}
 	}
-	llog.Debug("stack: %s", strings.Join(elems, ""))
+	llog.Debug("stack[%d]: %s", top, strings.Join(elems, ""))
 }

@@ -26,7 +26,13 @@ func (l *luaState) Call(nArgs, nResults int) {
 	val := l.stack.get(-(nArgs + 1))
 	c, ok := val.(*closure)
 	if !ok {
-		panic("not a function")
+		if mf := getMetafield(val, "__call", l); mf != nil {
+			if c, ok = mf.(*closure); ok {
+				l.stack.push(val)
+				l.Insert(-(nArgs + 2))
+				nArgs++
+			}
+		}
 	}
 	if c.goFunc != nil {
 		l.callGoClosure(nArgs, nResults, c)

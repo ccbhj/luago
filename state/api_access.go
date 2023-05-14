@@ -50,10 +50,10 @@ func (l *luaState) IsInteger(idx int) bool {
 
 func (l *luaState) ToBoolean(idx int) bool {
 	val := l.stack.get(idx)
-	return toBool(val)
+	return convertToBoolean(val)
 }
 
-func toBool(val luaValue) bool {
+func convertToBoolean(val luaValue) bool {
 	switch x := val.(type) {
 	case nil:
 		return false

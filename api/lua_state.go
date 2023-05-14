@@ -76,6 +76,16 @@ type LuaState interface {
 	GetGlobal(name string) LuaType
 	SetGlobal(name string)
 	Register(name string, f GoFunction)
+
+	GetMetatable(idx int) bool
+	SetMetatable(idx int)
+
+	RawLen(idx int) int
+	RawEqual(i1, i2 int) bool
+	RawGet(idx int) LuaType
+	RawSet(idx int)
+	RawGetI(idx int, i int64) LuaType
+	RawSetI(idx int, i int64)
 }
 
 func LuaUpvalueIndex(i int) int {

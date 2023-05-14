@@ -26,6 +26,18 @@ func print(ls api.LuaState) int {
 	return 0
 }
 
+func getMetatable(ls api.LuaState) int {
+	if !ls.GetMetatable(1) {
+		ls.PushNil()
+	}
+	return 1
+}
+
+func setMetatable(ls api.LuaState) int {
+	ls.SetMetatable(1)
+	return 1
+}
+
 func main() {
 	if len(os.Args) > 1 {
 		data, err := ioutil.ReadFile(os.Args[1])
@@ -34,23 +46,9 @@ func main() {
 		}
 		ls := state.New()
 		ls.Register("print", print)
+		ls.Register("getmetatable", getMetatable)
+		ls.Register("setmetatable", setMetatable)
 		ls.Load(data, os.Args[1], "b")
 		ls.Call(0, 0)
 	}
 }
-
-// func luaMain(proto *binchunk.Prototype) {
-// 	nRegs := int(proto.MaxStackSize)
-// 	ls := state.New(nRegs+8, proto)
-// 	ls.SetTop(nRegs)
-// 	for {
-// 		pc := ls.PC()
-// 		inst := vm.Instruction(ls.Fetch())
-// 		if inst.Opcode() == vm.OP_RETURN {
-// 			break
-// 		}
-// 		inst.Execute(ls)
-// 		fmt.Printf("[%02d] %-8s ", pc+1, inst.OpName())
-// 		printStack(ls)
-// 	}
-// }

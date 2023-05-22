@@ -126,3 +126,22 @@ func _popResults(fn, nRet int, vm LuaVM) {
 	vm.CheckStack(1)
 	vm.PushInteger(int64(fn))
 }
+
+func tForCall(i Instruction, vm LuaVM) {
+	fn, _, c := i.ABC()
+	fn++
+
+	_pushFuncAndArgs(fn, 3, vm)
+	vm.Call(2, c)
+	_popResults(fn+3, c+1, vm)
+}
+
+func tForLoop(i Instruction, vm LuaVM) {
+	ctrlVar, nextInst := i.AsBx()
+	ctrlVar++
+
+	if !vm.IsNil(ctrlVar + 1) {
+		vm.Copy(ctrlVar+1, ctrlVar)
+		vm.AddPC(nextInst)
+	}
+}

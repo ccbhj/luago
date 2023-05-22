@@ -3,10 +3,44 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
+
 	"luago/api"
 	"luago/state"
-	"os"
 )
+
+func _iPairAux(ls api.LuaState) int {
+	i := ls.ToInteger(2) + 1
+	ls.PushInteger(i)
+	if ls.GetI(1, i) == api.LUA_TNIL {
+		return 1
+	}
+	return 2
+}
+
+func ipairs(ls api.LuaState) int {
+	ls.PushGoFunction(_iPairAux, 0)
+	ls.PushValue(1)
+	ls.PushNil()
+	return 3
+}
+
+func pairs(ls api.LuaState) int {
+	ls.PushGoFunction(next, 0)
+	ls.PushValue(1)
+	ls.PushNil()
+	return 3
+}
+
+func next(ls api.LuaState) int {
+	ls.SetTop(2)
+	if ls.Next(1) {
+		return 2
+	} else {
+		ls.PushNil()
+		return 1
+	}
+}
 
 func print(ls api.LuaState) int {
 	nArgs := ls.GetTop()
@@ -48,6 +82,9 @@ func main() {
 		ls.Register("print", print)
 		ls.Register("getmetatable", getMetatable)
 		ls.Register("setmetatable", setMetatable)
+		ls.Register("next", next)
+		ls.Register("pairs", pairs)
+		ls.Register("ipairs", ipairs)
 		ls.Load(data, os.Args[1], "b")
 		ls.Call(0, 0)
 	}

@@ -1,14 +1,17 @@
 package state
 
 import (
-	"luago/number"
 	"math"
+
+	"luago/number"
 )
 
 type luaTable struct {
 	metatable *luaTable
 	arr       []luaValue
 	_map      map[luaValue]luaValue
+	keys      map[luaValue]luaValue
+	changed   bool
 }
 
 func newLuaTable(nArr, nRec int) *luaTable {
@@ -108,4 +111,32 @@ func (t *luaTable) len() int {
 
 func (t *luaTable) hasMetafield(fieldName string) bool {
 	return t.metatable != nil && t.metatable.get(fieldName) != nil
+}
+
+func (t *luaTable) nextKey(key luaValue) luaValue {
+	if t.keys == nil || key == nil {
+		t.initKeys()
+		t.changed = true
+	}
+
+	return t.keys[key]
+}
+
+func (t *luaTable) initKeys() {
+	var key luaValue
+
+	t.keys = make(map[luaValue]luaValue)
+	for i, v := range t.arr {
+		if v != nil {
+			t.keys[key] = int64(i + 1)
+			key = int64(i + 1)
+		}
+	}
+
+	for k, v := range t._map {
+		if v != nil {
+			t.keys[key] = k
+			key = k
+		}
+	}
 }
